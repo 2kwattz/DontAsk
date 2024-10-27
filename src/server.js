@@ -1,6 +1,17 @@
 const express = require('express'); // Express Framework
 const app = express(); // Express Instance
-const port = 80;
+const path = require('path');
+const port = 80; 
+
+// Paths
+
+const staticPath = path.join(__dirname, "../public");
+
+// Middlewares
+app.use(express.static(staticPath));
+
+
+
 
 // App Listen
 
