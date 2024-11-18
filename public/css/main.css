@@ -1,29 +1,38 @@
-/* Reset */
+/* General Reset */
 body {
   margin: 0;
-  font-family: 'Arial', sans-serif;
-  background-color: #f9f9f9;
+  font-family: 'Roboto', sans-serif;
+  background: linear-gradient(to bottom right, #f3f4f6, #ffffff);
   color: #333;
+  padding: 20px;
 }
 
-/* Container */
+/* Container Styling */
 .container {
   max-width: 700px;
-  margin: 50px auto;
+  margin: 0 auto;
   background: #ffffff;
-  padding: 20px 30px;
-  border-radius: 8px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Title */
-h1 {
+.header {
   text-align: center;
-  margin-bottom: 10px;
-  color: #007BFF;
+  margin-bottom: 20px;
 }
 
-/* Form Styles */
+h1 {
+  font-size: 2.5em;
+  color: #007bff;
+}
+
+p {
+  font-size: 1.1em;
+  color: #555;
+}
+
+/* Form Styling */
 form {
   margin-top: 20px;
 }
@@ -33,26 +42,25 @@ form {
 }
 
 label {
-  display: block;
   font-weight: bold;
   margin-bottom: 5px;
+  display: block;
 }
 
 input, textarea {
   width: 100%;
-  padding: 10px;
+  padding: 12px;
   font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-}
-
-textarea {
-  resize: none;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: 0.3s;
 }
 
 input:focus, textarea:focus {
-  border-color: #007BFF;
+  border-color: #007bff;
   outline: none;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.15);
 }
 
 /* Date Selector */
@@ -63,57 +71,55 @@ input:focus, textarea:focus {
 }
 
 .date-option {
-  background-color: #e7f3ff;
-  color: #007BFF;
-  border: 1px solid #007BFF;
-  border-radius: 5px;
+  background: #007bff;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
   padding: 10px 15px;
+  font-size: 1em;
   cursor: pointer;
-  transition: all 0.3s ease-in-out;
+  transition: 0.3s ease-in-out;
 }
 
 .date-option:hover, .date-option.selected {
-  background-color: #007BFF;
-  color: #ffffff;
+  background: #0056b3;
 }
 
 /* Time Slot Selector */
-.hidden {
-  display: none;
-}
-
 .time-slots {
   margin-top: 15px;
 }
 
 .slot {
-  background-color: #f0f0f0;
+  background: #f0f0f0;
   color: #333;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  padding: 10px;
+  padding: 12px;
   margin: 5px 0;
-  cursor: pointer;
   text-align: center;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s ease-in-out;
 }
 
 .slot:hover, .slot.selected {
-  background-color: #007BFF;
+  background: #007bff;
   color: #ffffff;
 }
 
-/* Submit Button */
+/* Button Styling */
 .btn {
   display: block;
   width: 100%;
-  background-color: #007BFF;
+  background-color: #007bff;
   color: white;
   border: none;
-  padding: 10px;
-  font-size: 18px;
-  border-radius: 5px;
+  padding: 12px 15px;
+  font-size: 1.2em;
+  border-radius: 8px;
   cursor: pointer;
   margin-top: 20px;
+  transition: background 0.3s;
 }
 
 .btn:hover {

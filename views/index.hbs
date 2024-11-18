@@ -8,65 +8,63 @@
 </head>
 <body>
     <div class="container">
-        <h1>Appointment Scheduler</h1>
-        <p>Select a date and time slot to book your appointment.</p>
+        <div class="header">
+            <h1>📅 Appointment Scheduler</h1>
+            <p>Book your appointment by selecting a date and time slot below.</p>
+        </div>
 
-        <form id="appointment-form">
+        <form id="appointment-form" method="POST" action="/">
             <!-- Personal Details -->
             <div class="form-group">
-                <label for="first-name">First Name:</label>
-                <input type="text" id="first-name" name="first-name" placeholder="Enter your first name" required>
+                <label for="first-name">First Name</label>
+                <input type="text" id="first-name" name="firstName" placeholder="Enter your first name" required>
             </div>
             <div class="form-group">
-                <label for="last-name">Last Name:</label>
-                <input type="text" id="last-name" name="last-name" placeholder="Enter your last name" required>
+                <label for="last-name">Last Name</label>
+                <input type="text" id="last-name" name="lastName" placeholder="Enter your last name" required>
             </div>
             <div class="form-group">
-                <label for="email">Email Address:</label>
-                <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email" required>
             </div>
             <div class="form-group">
-                <label for="phone">Phone Number:</label>
+                <label for="phone">Phone</label>
                 <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
             </div>
             <div class="form-group">
-                <label for="subject">Subject:</label>
+                <label for="subject">Subject</label>
                 <input type="text" id="subject" name="subject" placeholder="Enter the subject" required>
             </div>
-
-            <!-- Enquiry -->
             <div class="form-group">
-                <label for="enquiry">Enquiry:</label>
-                <textarea id="enquiry" name="enquiry" placeholder="Enter your enquiry" rows="4" required></textarea>
+                <label for="enquiry">Enquiry</label>
+                <textarea id="enquiry" name="enquiry" placeholder="Enter your enquiry here" rows="4" required></textarea>
             </div>
 
             <!-- Date Selector -->
             <div class="form-group">
-                <label>Select a Date:</label>
+                <label>Select a Date</label>
                 <div id="date-selector">
-                    <button type="button" class="date-option">November 18</button>
-                    <button type="button" class="date-option">November 19</button>
-                    <button type="button" class="date-option">November 20</button>
-                    <button type="button" class="date-option">November 21</button>
-                    <button type="button" class="date-option">November 22</button>
+                    {{#each nextFiveDays}}
+                    <button type="button" class="date-option" data-date="{{date}}">
+                        {{formattedDate}} <!-- Date display -->
+                    </button>
+                   {{/each}}
                 </div>
             </div>
 
             <!-- Time Slot Selector -->
             <div id="time-slots" class="time-slots hidden">
-                <label>Select a Time Slot:</label>
-                <div class="slot">9:00 AM - 9:30 AM</div>
-                <div class="slot">10:00 AM - 10:30 AM</div>
-                <div class="slot">11:00 AM - 11:30 AM</div>
-                <div class="slot">2:00 PM - 2:30 PM</div>
-                <div class="slot">3:00 PM - 3:30 PM</div>
+                <label>Select a Time Slot</label>
+                <div class="slot" data-slot="9:00 AM - 9:30 AM">9:00 AM - 9:30 AM</div>
+                <div class="slot" data-slot="10:00 AM - 10:30 AM">10:00 AM - 10:30 AM</div>
+                <div class="slot" data-slot="11:00 AM - 11:30 AM">11:00 AM - 11:30 AM</div>
+                <div class="slot" data-slot="2:00 PM - 2:30 PM">2:00 PM - 2:30 PM</div>
+                <div class="slot" data-slot="3:00 PM - 3:30 PM">3:00 PM - 3:30 PM</div>
             </div>
 
-            <!-- Confirmation -->
-            <div id="confirmation" class="hidden">
-                <p>You selected:</p>
-                <div id="selected-slot"></div>
-            </div>
+            <!-- Hidden inputs for selected date and time -->
+            <input type="hidden" id="selected-date" name="selectedDate">
+            <input type="hidden" id="selected-time" name="selectedTime">
 
             <!-- Submit Button -->
             <button type="submit" class="btn">Submit</button>
@@ -74,31 +72,44 @@
     </div>
 
     <script>
-        // Get elements
-        const dateOptions = document.querySelectorAll('.date-option');
-        const timeSlots = document.getElementById('time-slots');
-        const slots = document.querySelectorAll('.slot');
+        // JavaScript to handle the date and time slot selection
+document.addEventListener('DOMContentLoaded', function() {
+    // Get all date buttons
+    const dateButtons = document.querySelectorAll('.date-option');
+    const timeSlotsDiv = document.getElementById('time-slots');
+    const selectedDateInput = document.getElementById('selected-date');
+    const selectedTimeInput = document.getElementById('selected-time');
+    const slotButtons = document.querySelectorAll('.slot');
 
-        // Date selection
-        dateOptions.forEach(button => {
-            button.addEventListener('click', () => {
-                // Highlight selected date
-                dateOptions.forEach(btn => btn.classList.remove('selected'));
-                button.classList.add('selected');
-
-                // Show time slots
-                timeSlots.classList.remove('hidden');
-            });
+    // Function to toggle 'selected' class on buttons
+    function toggleSelectedClass(buttons, selectedButton) {
+        buttons.forEach(button => {
+            button.classList.remove('selected');  // Remove 'selected' from all buttons
         });
+        selectedButton.classList.add('selected');  // Add 'selected' to the clicked button
+    }
 
-        // Time slot selection
-        slots.forEach(slot => {
-            slot.addEventListener('click', () => {
-                // Highlight selected slot
-                slots.forEach(s => s.classList.remove('selected'));
-                slot.classList.add('selected');
-            });
+    // Add event listeners to the date buttons
+    dateButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const date = this.getAttribute('data-date');
+            selectedDateInput.value = date;  // Set the selected date value
+            toggleSelectedClass(dateButtons, this);  // Highlight the selected date button
+            timeSlotsDiv.classList.remove('hidden');  // Show time slots
         });
+    });
+
+    // Add event listeners to the time slots
+    slotButtons.forEach(slot => {
+        slot.addEventListener('click', function() {
+            const time = this.getAttribute('data-slot');
+            selectedTimeInput.value = time;  // Set the selected time slot value
+            toggleSelectedClass(slotButtons, this);  // Highlight the selected time slot
+        });
+    });
+});
+
     </script>
 </body>
+
 </html>
