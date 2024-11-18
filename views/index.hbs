@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Scheduler</title>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Appointment Scheduler</h1>
+        <p>Select a date and time slot to book your appointment.</p>
+
+        <form id="appointment-form">
+            <!-- Personal Details -->
+            <div class="form-group">
+                <label for="first-name">First Name:</label>
+                <input type="text" id="first-name" name="first-name" placeholder="Enter your first name" required>
+            </div>
+            <div class="form-group">
+                <label for="last-name">Last Name:</label>
+                <input type="text" id="last-name" name="last-name" placeholder="Enter your last name" required>
+            </div>
+            <div class="form-group">
+                <label for="email">Email Address:</label>
+                <input type="email" id="email" name="email" placeholder="Enter your email address" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number:</label>
+                <input type="tel" id="phone" name="phone" placeholder="Enter your phone number" required>
+            </div>
+            <div class="form-group">
+                <label for="subject">Subject:</label>
+                <input type="text" id="subject" name="subject" placeholder="Enter the subject" required>
+            </div>
+
+            <!-- Enquiry -->
+            <div class="form-group">
+                <label for="enquiry">Enquiry:</label>
+                <textarea id="enquiry" name="enquiry" placeholder="Enter your enquiry" rows="4" required></textarea>
+            </div>
+
+            <!-- Date Selector -->
+            <div class="form-group">
+                <label>Select a Date:</label>
+                <div id="date-selector">
+                    <button type="button" class="date-option">November 18</button>
+                    <button type="button" class="date-option">November 19</button>
+                    <button type="button" class="date-option">November 20</button>
+                    <button type="button" class="date-option">November 21</button>
+                    <button type="button" class="date-option">November 22</button>
+                </div>
+            </div>
+
+            <!-- Time Slot Selector -->
+            <div id="time-slots" class="time-slots hidden">
+                <label>Select a Time Slot:</label>
+                <div class="slot">9:00 AM - 9:30 AM</div>
+                <div class="slot">10:00 AM - 10:30 AM</div>
+                <div class="slot">11:00 AM - 11:30 AM</div>
+                <div class="slot">2:00 PM - 2:30 PM</div>
+                <div class="slot">3:00 PM - 3:30 PM</div>
+            </div>
+
+            <!-- Confirmation -->
+            <div id="confirmation" class="hidden">
+                <p>You selected:</p>
+                <div id="selected-slot"></div>
+            </div>
+
+            <!-- Submit Button -->
+            <button type="submit" class="btn">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        // Get elements
+        const dateOptions = document.querySelectorAll('.date-option');
+        const timeSlots = document.getElementById('time-slots');
+        const slots = document.querySelectorAll('.slot');
+
+        // Date selection
+        dateOptions.forEach(button => {
+            button.addEventListener('click', () => {
+                // Highlight selected date
+                dateOptions.forEach(btn => btn.classList.remove('selected'));
+                button.classList.add('selected');
+
+                // Show time slots
+                timeSlots.classList.remove('hidden');
+            });
+        });
+
+        // Time slot selection
+        slots.forEach(slot => {
+            slot.addEventListener('click', () => {
+                // Highlight selected slot
+                slots.forEach(s => s.classList.remove('selected'));
+                slot.classList.add('selected');
+            });
+        });
+    </script>
+</body>
+</html>
