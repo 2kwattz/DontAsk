@@ -23,6 +23,28 @@ app.set('view engine','hbs')
 // Appointment Schema
 
 const appointmentSchema = new mongoose.Schema({
+
+  firstName: {
+    type: String,
+    required: true,
+  },
+
+  lastName:{
+    type: String,
+    required: true,
+  },
+
+  email:{
+    type:String,
+    required: true,
+  },
+
+  subject:{
+    type:String,
+    required: true,
+  },
+
+
     // The date of the appointment
     date: {
       type: Date,
@@ -42,38 +64,18 @@ const appointmentSchema = new mongoose.Schema({
         },
       },
     ],
-    // Optional: track creation date for auditing purposes
+    // track creation date for auditing purposes
     createdAt: {
       type: Date,
       default: Date.now,
     },
   });
   
+  const Appointment = mongoose.model('Appointment', appointmentSchema);
+
   function getNextFiveDaysWithTimeSlots() {
     const days = [];
     const today = moment(); // Get today's date using Moment.js
-
-    // Define time slots between 10:00 AM and 4:30 PM with a 1-hour break from 1:00 PM to 2:00 PM
-    const timeSlots = [];
-    for (let hour = 10; hour <= 16; hour++) {
-        const startTime = moment().hour(hour).minute(0).second(0); // Start time for each slot
-
-        // Skip the 1:00 PM - 2:00 PM break
-        if (hour === 13) continue;
-
-        // Create two slots for each hour
-        const morningSlot = {
-            start: startTime.format('HH:mm A'),
-            end: moment(startTime).add(30, 'minutes').format('HH:mm A')
-        };
-        timeSlots.push(morningSlot);
-
-        const afternoonSlot = {
-            start: moment(startTime).add(30, 'minutes').format('HH:mm A'),
-            end: moment(startTime).add(60, 'minutes').format('HH:mm A')
-        };
-        timeSlots.push(afternoonSlot);
-    }
 
     for (let i = 0; i < 5; i++) {
         const nextDay = today.clone().add(i, 'days'); // Clone today and add i days
@@ -85,8 +87,9 @@ const appointmentSchema = new mongoose.Schema({
             day: nextDay.date(), // Day of the month (e.g., 18)
             month: nextDay.format('MMMM'), // Full month name (e.g., November)
             date: nextDay.toDate(), // The full JavaScript Date object
-            timeSlots: [...timeSlots] // Copy of time slots for each day
         };
+
+        console.log("Days Object", dayObject)
 
         days.push(dayObject); // Add the day object with time slots to the array
     }
@@ -107,6 +110,9 @@ app.get("/", function (request, response) {
 app.post("/", function (request, response) {
     const { firstName, lastName, email, phone, subject, enquiry, selectedDate, selectedTime } = request.body;
 
+    // Convert selected date and time into a Date object
+    const appointmentDateTime = moment(`${selectedDate} ${selectedTime}`, 'YYYY-MM-DD hh:mm A').toDate();
+
     console.log("Received Appointment Request:");
     console.log("First Name:", firstName);
     console.log("Last Name:", lastName);
@@ -117,33 +123,38 @@ app.post("/", function (request, response) {
     console.log("Selected Date:", selectedDate);
     console.log("Selected Time:", selectedTime);
 
-    // Convert selected date and time to a Date object
-    const appointmentDateTime = moment(`${selectedDate} ${selectedTime}`, 'YYYY-MM-DD HH:mm A').toDate();
+    // Create the time slot object to mark as booked
+    const timeSlot = {
+        timeSlot: selectedTime, // Store the selected time
+        isBooked: true, // Mark it as booked
+    };
 
-    // Create a new appointment
-    // const newAppointment = new Appointment({
-    //     firstName,
-    //     lastName,
-    //     email,
-    //     phone,
-    //     subject,
-    //     enquiry,
-    //     selectedDate: appointmentDateTime,
-    //     selectedTime
-    // });
+    // Create a new appointment object that matches your schema
+    const newAppointment = new Appointment({
+        firstName,
+        lastName,
+        email,
+        phone,
+        subject,
+        enquiry,
+        date: appointmentDateTime, // Use the 'date' field from the schema
+        timeSlots: [timeSlot] // Store the time slot in the 'timeSlots' array
+    });
 
-    // // Save appointment to MongoDB
-    // newAppointment.save()
-    //     .then(() => {
-    //         console.log("Appointment saved successfully!");
-    //         // Send confirmation message and redirect to a success page or homepage
-    //         response.redirect('/success'); // Redirect after saving the appointment
-    //     })
-    //     .catch(err => {
-    //         console.error("Error saving appointment:", err);
-    //         response.status(500).send('Error saving appointment');
-    //     });
+    // Save the appointment to MongoDB
+    newAppointment.save()
+        .then(() => {
+            console.log("Appointment saved successfully!");
+            const successPrompt = "Successfull"
+            // Send confirmation message and redirect to a success page or homepage
+            response.status(200).render('index', {nextFiveDays,successPrompt});
+        })
+        .catch(err => {
+            console.error("Error saving appointment:", err);
+            response.status(500).send('Error saving appointment');
+        });
 });
+
 // App Listen
 app.listen(port, function(){
     console.log(`Node Server is running, listening on port ${port} `)
